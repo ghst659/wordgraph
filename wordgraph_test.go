@@ -64,6 +64,19 @@ func TestBuildFromListNoInsertions(t *testing.T) {
 	}
 }
 
+func TestGraphClear(t *testing.T) {
+	g := NewGraph()
+	g.BuildFromList(false, []string{
+		"cat", "hat", "car",
+	})
+	g.Clear()
+	got := g.Neighbours("cat")
+	want := []string{}
+	if !gotIsWant(got, want) {
+		t.Errorf("Clear failure to clear: %v", got)
+	}
+}
+
 func TestBuildFromListWithInsertions(t *testing.T) {
 	g := NewGraph()
 	g.BuildFromList(true, []string{

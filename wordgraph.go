@@ -16,6 +16,13 @@ func NewGraph() *Graph {
 	}
 }
 
+// Clear clears all edge information in the Graph.
+func (g *Graph) Clear() {
+	for k := range g.adjacents {
+		delete(g.adjacents, k)
+	}
+}
+
 // dirEdge creates a directional edge from X to Y.
 func (g *Graph) dirEdge(x, y string) {
 	if _, ok := g.adjacents[x]; !ok {
@@ -42,6 +49,9 @@ func (g *Graph) Neighbours(x string) (n []string) {
 	return
 }
 
+// BuildFromList populates the graph from the list of words.   The first
+// boolean argument, if true, indicates that single insertions/deletions
+// are to be considered adjacency edits, in addition to substitutions.
 func (g *Graph) BuildFromList(insdel bool, words []string) (err error) {
 	buckets := make(map[string][]string)
 	for _, w := range words {
