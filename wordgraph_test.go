@@ -49,3 +49,31 @@ func TestGraphEdgesNeighbours(t *testing.T) {
 		t.Errorf("e neighbour mismatch: %v vs %v", ne, wantE)
 	}
 }
+
+func TestBuildFromListNoInsertions(t *testing.T) {
+	g := NewGraph()
+	g.BuildFromList(false, []string{
+		"cat", "hat", "car", "cur", "cut", "cart",
+	})
+	got := g.Neighbours("cat")
+	want := []string{
+		"hat", "car", "cut",
+	}
+	if !gotIsWant(got, want) {
+		t.Errorf("%q neighbour mismatch: %v vs %v", "cat", got, want)
+	}
+}
+
+func TestBuildFromListWithInsertions(t *testing.T) {
+	g := NewGraph()
+	g.BuildFromList(true, []string{
+		"cat", "hat", "car", "cur", "cut", "cart", "chat", "chats", "cats",
+	})
+	got := g.Neighbours("cat")
+	want := []string{
+		"hat", "car", "cut", "cart", "chat", "cats",
+	}
+	if !gotIsWant(got, want) {
+		t.Errorf("%q neighbour mismatch: %v vs %v", "cat", got, want)
+	}
+}

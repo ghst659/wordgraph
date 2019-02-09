@@ -41,3 +41,34 @@ func (g *Graph) Neighbours(x string) (n []string) {
 	}
 	return
 }
+
+func (g *Graph) BuildFromList(insdel bool, words []string) (err error) {
+	buckets := make(map[string][]string)
+	for _, w := range words {
+		for p := range w {
+			pre := w[:p]
+			suf := w[p+1:]
+			kSub := pre + " " + suf
+			buckets[kSub] = append(buckets[kSub], w)
+			if insdel {
+				aft := w[p:]
+				kInsDel := pre + " " + aft
+				buckets[kInsDel] = append(buckets[kInsDel], w)
+			}
+		}
+		if insdel {
+			kInsDel := w + " "
+			buckets[kInsDel] = append(buckets[kInsDel], w)
+		}
+	}
+	for _, wList := range buckets {
+		if len(wList) > 1 {
+			for _, a := range wList {
+				for _, b := range wList {
+					g.AddEdge(a, b)
+				}
+			}
+		}
+	}
+	return
+}
