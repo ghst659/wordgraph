@@ -1,8 +1,12 @@
 // Package wordgraph provides word-ladder lookup capability.
 package wordgraph
 
+import (
+	"github.com/ghst659/stringerset"
+)
+
 // wordSet is a shorthand for a set of strings.
-type wordSet map[string]struct{}
+type wordSet = stringerset.StringerSet
 
 // Graph is a struct representing a word-ladder graph.
 type Graph struct {
@@ -26,9 +30,9 @@ func (g *Graph) Clear() {
 // dirEdge creates a directional edge from X to Y.
 func (g *Graph) dirEdge(x, y string) {
 	if _, ok := g.adjacents[x]; !ok {
-		g.adjacents[x] = make(wordSet)
+		g.adjacents[x] = stringerset.New() // make(wordSet)
 	}
-	g.adjacents[x][y] = struct{}{}
+	g.adjacents[x].Add(y)
 }
 
 // AddEdge creates a non-directional edge between two words.
@@ -40,13 +44,8 @@ func (g *Graph) AddEdge(a, b string) {
 }
 
 // Neighbours returns a slice of words adjacent to a given word.
-func (g *Graph) Neighbours(x string) (n []string) {
-	if s, ok := g.adjacents[x]; ok {
-		for k := range s {
-			n = append(n, k)
-		}
-	}
-	return
+func (g *Graph) Neighbours(x string) []string {
+	return g.adjacents[x].Members()
 }
 
 // BuildFromList populates the graph from the list of words.   The first
